@@ -14,6 +14,7 @@ public class Literal implements Comparable <Literal>
 {
 	// The value of the literal
 	private boolean value;
+
 	// The literal number or negation of that number
 	private int name;
 
@@ -34,7 +35,7 @@ public class Literal implements Comparable <Literal>
 	 * @param input The name of the literal
 	 */
 	public Literal (int input)
-	{
+	{	
 		if (input <0)
 		{
 			value = false;
@@ -46,14 +47,21 @@ public class Literal implements Comparable <Literal>
 		}
 		name = input;
 	}
-
+	
 	/**
-	 * The value of the Literal
-	 * @return The boolean value of the Literal
+	 * Returns the value
+	 * @return The value
 	 */
-	public boolean get()
-	{
+	public boolean isValue() {
 		return value;
+	}
+	
+	/**
+	 * Sets the value of the Literal
+	 * @param value True or false
+	 */
+	public void setValue(boolean value) {
+		this.value = value;
 	}
 	
 	/**
@@ -63,15 +71,6 @@ public class Literal implements Comparable <Literal>
 	public int getName()
 	{
 		return name;
-	}
-
-	/**
-	 * Sets the boolean value of literal
-	 *	@param newValue Allows the value of the Literal to be changed.
-	 */
-	public void set(boolean newValue)
-	{
-		value = newValue;
 	}
 	
 	/**
@@ -118,13 +117,13 @@ public class Literal implements Comparable <Literal>
 			return false;
 		}
 		Literal test = (Literal)other;
-		if(name == test.getName()&&value==test.get())
+		if(name == test.getName()&&value==test.isValue())
 		{
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Compares two literals names and returns the result
 	 * @param other The literal to compare

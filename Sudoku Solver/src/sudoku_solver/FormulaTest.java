@@ -1,6 +1,9 @@
 package sudoku_solver;
 
 import static org.junit.Assert.*;
+
+import java.io.File;
+
 import org.junit.Test;
 
 /**
@@ -26,9 +29,18 @@ public class FormulaTest {
 		assertTrue(testForm.isEmpty());
 		
 		assertEquals(testForm.getLastIndex(),0);
-		
-		
-		
+			
+	}
+	
+	/**
+	 * Takes a cnf .txt file and makes a formula and then takes that
+	 * formula and makes a .cnf file
+	 */
+	@Test
+	public void testWritetoFile () {
+		File file = new File("C:/TEMP/formulaU15.txt");
+		Formula formula = Formula.readFromFile(file.toString());
+		Formula.writeToFile(formula);
 	}
 	
 	/**

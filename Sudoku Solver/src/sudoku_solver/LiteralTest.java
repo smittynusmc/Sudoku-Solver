@@ -25,9 +25,9 @@ public class LiteralTest {
 		Literal test1=new Literal(3,true);
 		Literal test2=new Literal(-5,false);
 		assertEquals(test1.getName(),3);
-		assertEquals(test1.get(),true);
+		assertEquals(test1.isValue(),true);
 		assertEquals(test2.getName(),5);
-		assertEquals(test2.get(),false);
+		assertEquals(test2.isValue(),false);
 
 	}
 
@@ -43,25 +43,25 @@ public class LiteralTest {
 		assertEquals(test3.getName(),1);
 		assertEquals(test4.getName(),514);
 		assertEquals(test5.getName(),1);
-		assertEquals(test3.get(),false);
-		assertEquals(test4.get(),true);
-		assertEquals(test5.get(),true);
+		assertEquals(test3.isValue(),false);
+		assertEquals(test4.isValue(),true);
+		assertEquals(test5.isValue(),true);
 	}
 	
 	/**
 	 * Test a literals get method
 	 */
 	@Test
-	public void testGet() 
+	public void testisValue() 
 	{
 		Literal test6 =new Literal(-231,true);
 		Literal test7 =new Literal(-5);
 		Literal test8 =new Literal(-589,false);
 		Literal test9 =new Literal(9184);
-		assertEquals(test6.get(),true);
-		assertEquals(test7.get(),false);
-		assertEquals(test8.get(),false);
-		assertEquals(test9.get(),true);
+		assertEquals(test6.isValue(),true);
+		assertEquals(test7.isValue(),false);
+		assertEquals(test8.isValue(),false);
+		assertEquals(test9.isValue(),true);
 	}
 	
 	/**
@@ -83,24 +83,24 @@ public class LiteralTest {
 	 * Test a literal set method
 	 */
 	@Test
-	public void testSet() {
+	public void testsetValue() {
 		Literal test6 =new Literal(-231,true);
 		Literal test7 =new Literal(-5);
-		assertEquals(test6.get(),true);
-		assertEquals(test7.get(),false);
+		assertEquals(test6.isValue(),true);
+		assertEquals(test7.isValue(),false);
 		
-		test6.set(false);
-		assertEquals(test6.get(),false);
-		test6.set(true);
-		assertEquals(test6.get(),true);
-		test6.set(false);
-		assertEquals(test6.get(),false);
-		test7.set(true);
-		assertEquals(test7.get(),true);
-		test7.set(false);
-		assertEquals(test7.get(),false);
-		test7.set(true);
-		assertEquals(test7.get(),true);
+		test6.setValue(false);
+		assertEquals(test6.isValue(),false);
+		test6.setValue(true);
+		assertEquals(test6.isValue(),true);
+		test6.setValue(false);
+		assertEquals(test6.isValue(),false);
+		test7.setValue(true);
+		assertEquals(test7.isValue(),true);
+		test7.setValue(false);
+		assertEquals(test7.isValue(),false);
+		test7.setValue(true);
+		assertEquals(test7.isValue(),true);
 		
 	}
 	
@@ -111,9 +111,9 @@ public class LiteralTest {
 	public void testChangeValue() {
 		Literal test6 =new Literal(-231,true);
 		Literal returnLit = test6.changeValue();
-		assertEquals(test6.get(),true);
+		assertEquals(test6.isValue(),true);
 		assertEquals(test6.getName(),231);
-		assertEquals(returnLit.get(),false);
+		assertEquals(returnLit.isValue(),false);
 		assertEquals(returnLit.getName(),231);
 	}
 	

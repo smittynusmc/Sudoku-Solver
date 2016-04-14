@@ -38,6 +38,7 @@ public class Clause
 		clauseValues.add(input);
 	}
 
+
 	/**
 	 * Adds an entire list of Literals as a clause.
 	 * @param clauseList The collection of literals to add to the clause
@@ -83,18 +84,18 @@ public class Clause
 		{
 			testList.remove(index);
 		}
-		
+
 		//Check to see if Literal will satisfy Clause
 		else if (testList.contains(workingVar))
 		{
 			return null;
 		}
-		
+
 		//saves new modified list to returnClause
 		returnClause.addList(testList);
 		return returnClause;
 	}
-	
+
 	/**
 	 * Gets the collection of literals.
 	 * @return The collection of literals
@@ -115,17 +116,21 @@ public class Clause
 	}
 
 	/**
-	 * Returns a string formatted as { 1 true or 2 true or 3 false }.
+	 * Returns a string formatted as { 1 true or 2 true or -3 false }.
 	 * @return The contents of the List in a String format
 	 */
 	public String toString()
 	{
-		String result = "{ ";
-		for (int i=0;i<clauseValues.size()-1;i++)
+		String result = "";
+		for (int i=0;i<clauseValues.size();i++)
 		{
-			result += clauseValues.get(i) + " or ";
+			if (clauseValues.get(i).isValue()) {
+				result += clauseValues.get(i).getName() + " ";
+			}
+			else {
+				result += "-" + clauseValues.get(i).getName() + " ";
+			}
 		}
-		result += clauseValues.get(clauseValues.size()-1)+" }";
 		return result;
 	}
 

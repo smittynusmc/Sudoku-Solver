@@ -1,10 +1,13 @@
 package sudoku_solver;
 
 import java.io.BufferedReader;
-
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -24,7 +27,17 @@ import java.util.Scanner;
  */
 
 public class Formula {
-
+	
+	//The number of variables for a 3x3 sudoku board
+	public static final int NUMVARIABLES= 729;
+	
+	//The end of line marker for a cnf file which marks the end of a clause
+	//in a boolean formula
+	public static final int CNF_END_OF_LINEMARKER = 0;
+	
+	//The filename/location for a new file
+	private static String fileName = "C:/Users/Adam Tucker/git2/SudokuSolver/Sudoku Solver/src/sudoku_solver/test.cnf";
+	
 	// list of clauses in CNF 
 	private List<Clause> formulaList;
 
@@ -50,6 +63,7 @@ public class Formula {
 	private int minClauseSize;
 
 	//keeps track of the index the first smallest clause
+	@SuppressWarnings("unused")
 	private int minClauseIndex;
 
 
@@ -86,7 +100,7 @@ public class Formula {
 		}
 
 	}
-	
+
 	/**
 	 * Empty of the formula has been solved
 	 * @return True if the collection is empty and false otherwise
@@ -121,7 +135,7 @@ public class Formula {
 	{
 		return formulaList.size();
 	}
-	
+
 	/**
 	 * Gets the last index
 	 * @return The last index
@@ -129,7 +143,7 @@ public class Formula {
 	public int getLastIndex() {
 		return lastIndex;
 	}
-	
+
 	/**
 	 * Sets the last index
 	 * @param lastIndex The integer last index will be set as
@@ -146,7 +160,7 @@ public class Formula {
 		Collections.sort(successState);
 		return successState;
 	}
-	
+
 	/**
 	 * Recursive backtracking call to solve the formula
 	 * @return True if the formula is satisfiable and false otherwise
@@ -164,7 +178,7 @@ public class Formula {
 		{
 			return false;
 		}
-		
+
 		//Recursive element
 		else{
 			// Creates a child formula with true (a formula that has evaluated classes on the
@@ -193,7 +207,7 @@ public class Formula {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a child formula to be tested by the solver
 	 * As the solver recursively travels through the collection
@@ -243,6 +257,7 @@ public class Formula {
 	{
 		BufferedReader br = null;
 		String line = null;
+		@SuppressWarnings("unused")
 		int numVars, numClauses, var;
 		Formula f = new Formula();
 		try {
@@ -290,6 +305,43 @@ public class Formula {
 		return f;
 	}
 	
+	/**
+	 * Takes a formula and makes a new cnf file 
+	 * @param formToWrite
+	 */
+	public static void writeToFile (Formula formToWrite) {
+		try {    
+            Writer fileWriter = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(fileName), "utf-8"));
+            fileWriter.write("c This file illustrates the file format \n");
+            fileWriter.write("p cnf " + NUMVARIABLES + " " + formToWrite.formulaList.size() + " \n");
+            String lines = "";
+            for (Clause myClause: formToWrite.formulaList) {
+            	lines = lines + myClause + CNF_END_OF_LINEMARKER + "\n";
+            }
+            fileWriter.write(lines);
+            fileWriter.close();
+        } catch (IOException e) {
+            System.err.println("Problem writing to the file statsTest.txt");
+        }
+	}
+	
+	/**
+	 * Gets the filename/location for the a new .cnf file
+	 * @return The filename/location
+	 */
+	public static String getFileName() {
+		return fileName;
+	}
+	
+	/**
+	 * Sets the filename/location for a new .cnf file
+	 * @param fileName The new filename/location
+	 */
+	public static void setFileName(String fileName) {
+		Formula.fileName = fileName;
+	}
+
 	/**
 	 * Returns a string as {{1 true or 2 true} and (3 false and 4 false}}
 	 * @return The contents of the formula in a string format
