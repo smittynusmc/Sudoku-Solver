@@ -1,10 +1,17 @@
 package sudoku_solver;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.util.Arrays;
 
 import org.junit.Test;
+
+import org.sat4j.core.*;
+import org.sat4j.minisat.SolverFactory;
+import org.sat4j.specs.ISolver;
 
 /**
  * Test a suite for a formula
@@ -41,6 +48,10 @@ public class FormulaTest {
 		File file = new File("C:/TEMP/formulaU15.txt");
 		Formula formula = Formula.readFromFile(file.toString());
 		Formula.writeToFile(formula);
+		//String[] array = null;
+		//array[0] = file.toString();
+		//ISolver solver = SolverFactory.newDefault();
+		//solver.
 	}
 	
 	/**
