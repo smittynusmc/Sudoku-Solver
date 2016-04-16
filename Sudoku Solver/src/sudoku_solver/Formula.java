@@ -72,8 +72,8 @@ public class Formula {
 	 */
 	public Formula()
 	{
-		formulaList = new ArrayList<Clause>(500);
-		successState = new ArrayList <Literal> (500);
+		formulaList = new ArrayList<Clause>(13000);
+		successState = new ArrayList <Literal> (1000);
 		isEmpty = true; 
 		numVariables = 0;
 		minClauseSize=Integer.MAX_VALUE;
