@@ -14,6 +14,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 
+import org.sat4j.pb.SolverFactory;
+import org.sat4j.reader.DimacsReader;
+import org.sat4j.reader.ParseFormatException;
+import org.sat4j.reader.Reader;
+import org.sat4j.specs.ContradictionException;
+import org.sat4j.specs.IProblem;
+import org.sat4j.specs.ISolver;
+import org.sat4j.specs.TimeoutException;
+
 /**
  * A formula is a conjunction (and) of clauses, or a single clause, in which
  * the formula evaluates itself and returns true if satisfiable and false otherwise,
@@ -79,6 +88,32 @@ public class Formula {
 		minClauseSize=Integer.MAX_VALUE;
 		minClauseIndex=-1;
 	}
+	
+	public static void main ( String [] args ) {
+		ISolver solver = SolverFactory . newDefault ();
+		solver . setTimeout (3600); // 1 hour timeout
+		Reader reader = new DimacsReader ( solver );
+		// CNF filename is given on the command line
+		try {
+		IProblem problem = reader . parseInstance ( args [0]);
+		if ( problem . isSatisfiable ()) {
+		System . out . println (" Satisfiable !");
+		System . out . println ( reader );
+		} else {
+		System . out . println (" Unsatisfiable !");
+		}
+		} catch ( FileNotFoundException e) {
+				e.printStackTrace();
+		} catch ( ParseFormatException e) {
+			e.printStackTrace();
+		} catch ( IOException e) {
+			e.printStackTrace();
+		} catch ( ContradictionException e) {
+		System .out . println (" Unsatisfiable ( trivial )!");
+		} catch ( TimeoutException e) {
+		System .out . println (" Timeout , sorry !");
+		}
+		}
 
 	/**
 	 * This method adds a clause to this formula
