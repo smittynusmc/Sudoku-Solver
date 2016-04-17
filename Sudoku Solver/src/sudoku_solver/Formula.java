@@ -22,23 +22,6 @@ import org.sat4j.specs.IProblem;
 import org.sat4j.specs.ISolver;
 import org.sat4j.specs.TimeoutException;
 
-import org.sat4j.pb.SolverFactory;
-import org.sat4j.reader.DimacsReader;
-import org.sat4j.reader.ParseFormatException;
-import org.sat4j.reader.Reader;
-import org.sat4j.specs.ContradictionException;
-import org.sat4j.specs.IProblem;
-import org.sat4j.specs.ISolver;
-import org.sat4j.specs.TimeoutException;
-
-import org.sat4j.pb.SolverFactory;
-import org.sat4j.reader.DimacsReader;
-import org.sat4j.reader.ParseFormatException;
-import org.sat4j.reader.Reader;
-import org.sat4j.specs.ContradictionException;
-import org.sat4j.specs.IProblem;
-import org.sat4j.specs.ISolver;
-import org.sat4j.specs.TimeoutException;
 
 /**
  * A formula is a conjunction (and) of clauses, or a single clause, in which
@@ -62,7 +45,7 @@ public class Formula {
 	public static final int CNF_END_OF_LINEMARKER = 0;
 	
 	//The filename/location for a new file
-	private static String fileName = "C:/Users/Adam Tucker/git2/SudokuSolver/Sudoku Solver/src/sudoku_solver/test.cnf";
+	private static String fileName = "C:/Users/Adam Tucker/Google Drive/School/Spring 2016/DAA/sat4j-sat4j-sat-v20130419/s28.cnf";
 	
 	// list of clauses in CNF 
 	private List<Clause> formulaList;
@@ -112,10 +95,14 @@ public class Formula {
 		Reader reader = new DimacsReader ( solver );
 		// CNF filename is given on the command line
 		try {
-		IProblem problem = reader . parseInstance ( args [0]);
+		IProblem problem = reader . parseInstance (fileName);
 		if ( problem . isSatisfiable ()) {
 		System . out . println (" Satisfiable !");
-		System . out . println ( reader );
+		//Gets the array of integers that are the solution to the formula
+		int[] solutionArray = problem.primeImplicant();
+		for (int i=0;i<solutionArray.length;i++) {
+			System.out.print(solutionArray[i] + " ");
+		}
 		} else {
 		System . out . println (" Unsatisfiable !");
 		}

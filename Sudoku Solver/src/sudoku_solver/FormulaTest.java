@@ -45,7 +45,7 @@ public class FormulaTest {
 	 */
 	@Test
 	public void testWritetoFile () {
-		File file = new File("C:/TEMP/formulaU15.txt");
+		File file = new File("C:/Users/Adam Tucker/Google Drive/School/Spring 2016/DAA/sat4j-sat4j-sat-v20130419/s28.cnf");
 		Formula formula = Formula.readFromFile(file.toString());
 		Formula.writeToFile(formula);
 		//String[] array = null;
