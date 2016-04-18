@@ -1,5 +1,6 @@
 package sudoku_solver;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SudokuBoard extends Formula {
@@ -12,7 +13,9 @@ public class SudokuBoard extends Formula {
 	 */
 
 	public static final int SIZE=3;
-
+	public static final int SIZE_SQUARED = (int) Math.pow(SIZE, 2);
+	public static final int SIZE_CUBED = (int) Math.pow(SIZE, 3);
+	public static final int SIZE_FOURTH = (int) Math.pow(SIZE, 4);
 
 	public SudokuBoard()
 	{
@@ -22,47 +25,46 @@ public class SudokuBoard extends Formula {
 	public void createBoard()
 	{
 		Clause workingList = new Clause();
-		for(int i=1; i<=(SIZE*SIZE*SIZE)*(SIZE*SIZE*SIZE); i++)
+		for(int i=1; i<=(SIZE_CUBED)*(SIZE_CUBED); i++)
 		{
-
-			if(i<=(SIZE*SIZE)*(SIZE*SIZE))
+			if(i<=(SIZE_SQUARED)*(SIZE_SQUARED))
 			{
 				//create Cell clauses
 				workingList.clearClause();
-				for(int j=1;j<=(SIZE*SIZE);j++)
+				for(int j=0;j<(SIZE_SQUARED);j++)
 				{
-					workingList.add(new Literal(i*j*SIZE*SIZE*SIZE*SIZE));
+					workingList.add(new Literal(j*SIZE_FOURTH+i));
 				}
 				finalizeClause(workingList);
 			}
-			if(i%(SIZE*SIZE)==1)
+			if(i%(SIZE_SQUARED)==1)
 			{
 				//create row clauses
 				workingList.clearClause();
-				for(int j=0;j<(SIZE*SIZE);j++)
+				for(int j=0;j<(SIZE_SQUARED);j++)
 				{
 					workingList.add(new Literal(i+j));
 				}
 				finalizeClause(workingList);
 			}
-			if(((i/(SIZE*SIZE))+1)%(SIZE*SIZE)==1)//if (row%size^2==1)
+			if(((i/(SIZE_SQUARED))+1)%(SIZE_SQUARED)==1)//if (row%size^2==1)
 			{
 				//create column clauses
 				workingList.clearClause();
-				for(int j=0;j<(SIZE*SIZE);j++)
+				for(int j=0;j<(SIZE_SQUARED);j++)
 				{
-					workingList.add(new Literal(i+j*(SIZE*SIZE)));
+					workingList.add(new Literal(i+j*(SIZE_SQUARED)));
 				}
 				finalizeClause(workingList);
 			}
-			if(((i/(SIZE*SIZE))+1)%(SIZE)==1 && i%SIZE==1)
+			if(((i/(SIZE_SQUARED))+1)%(SIZE)==1 && i%SIZE==1)
 			{
 				//create block clauses
 				workingList.clearClause();
-				for(int j=0;j<(SIZE*SIZE);j++)//j will increment rows
+				for(int j=0;j< SIZE;j++)//j will increment rows
 				{
 					for(int k=0;k<SIZE;k++) //k will increment cells
-						workingList.add(new Literal((i+k)+j*(SIZE*SIZE))); 
+						workingList.add(new Literal((i+k)+j*(SIZE_SQUARED))); 
 				}
 				finalizeClause(workingList);
 			}
@@ -72,19 +74,19 @@ public class SudokuBoard extends Formula {
 	public void finalizeClause(Clause input)
 	{
 		Clause workingClause = new Clause();
-		List <Literal> workingList=input.getValues();
+		List <Literal> workingList = input.getValues();
 		workingClause.addList(workingList);
 		super.addClause(workingClause); //adds the full or statement
 		for(int i=0;i<input.size()-1;i++)
 		{
 			for(int j=i+1;j<input.size();j++)
 			{
-				workingClause.clearClause();//clears clauselist
-				workingClause.add(workingList.get(i).changeValue());
+				Clause negateWorkingClause = new Clause ();
+				negateWorkingClause.add(workingList.get(i).changeValue());
 				//adds first Literal to clauseList
-				workingClause.add(workingList.get(j).changeValue());
+				negateWorkingClause.add(workingList.get(j).changeValue());
 				//adds second Literal to clauseList
-				super.addClause(workingClause);
+				super.addClause(negateWorkingClause);
 				}
 		}
 

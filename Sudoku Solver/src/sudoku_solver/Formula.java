@@ -118,6 +118,44 @@ public class Formula {
 		System .out . println (" Timeout , sorry !");
 		}
 		}
+	
+	public static void SAT4j (String file) {
+		ISolver solver = SolverFactory . newDefault ();
+		solver . setTimeout (3600); // 1 hour timeout
+		Reader reader = new DimacsReader ( solver );
+		// CNF filename is given on the command line
+		try {
+		IProblem problem = reader . parseInstance (file);
+		if ( problem . isSatisfiable ()) {
+		System . out . println (" Satisfiable !");
+		//Gets the array of integers that are the solution to the formula
+		int[] solutionArray = problem.primeImplicant();
+		for (int i=0;i<solutionArray.length;i++) {
+			System.out.print(solutionArray[i] + " ");
+		}
+		} else {
+		System . out . println (" Unsatisfiable !");
+		}
+		} catch ( FileNotFoundException e) {
+				e.printStackTrace();
+		} catch ( ParseFormatException e) {
+			e.printStackTrace();
+		} catch ( IOException e) {
+			e.printStackTrace();
+		} catch ( ContradictionException e) {
+		System .out . println (" Unsatisfiable ( trivial )!");
+		} catch ( TimeoutException e) {
+		System .out . println (" Timeout , sorry !");
+		}
+		}
+
+	public List<Clause> getFormulaList() {
+		return formulaList;
+	}
+
+	public void setFormulaList(List<Clause> formulaList) {
+		this.formulaList = formulaList;
+	}
 
 	/**
 	 * This method adds a clause to this formula
@@ -395,7 +433,7 @@ public class Formula {
 			}
 			result += formulaList.get(i) + " and ";
 		}
-		result += formulaList.get(formulaList.size()-1)+" }";
+		result += formulaList.get(formulaList.size()-1)+" }" + "\n";
 		return result;
 	}
 

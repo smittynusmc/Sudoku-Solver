@@ -122,13 +122,19 @@ public class Clause
 	public String toString()
 	{
 		String result = "";
-		for (int i=0;i<clauseValues.size();i++)
+		if (clauseValues.get(0).isValue()) {
+			result += clauseValues.get(0).getName() + " ";
+		}
+		else {
+			result += "-" + clauseValues.get(0).getName() + " ";
+		}
+		for (int i=1;i<clauseValues.size();i++)
 		{
 			if (clauseValues.get(i).isValue()) {
-				result += clauseValues.get(i).getName() + " ";
+				result += "or " + clauseValues.get(i).getName() + " ";
 			}
 			else {
-				result += "-" + clauseValues.get(i).getName() + " ";
+				result += "or "+ "-" + clauseValues.get(i).getName() + " ";
 			}
 		}
 		return result;
