@@ -12,7 +12,7 @@ public class SudokuBoard extends Formula {
 	 *  from file
 	 */
 
-	public static final int SIZE=3;
+	public static final int SIZE=2;
 	public static final int SIZE_SQUARED = (int) Math.pow(SIZE, 2);
 	public static final int SIZE_CUBED = (int) Math.pow(SIZE, 3);
 	public static final int SIZE_FOURTH = (int) Math.pow(SIZE, 4);

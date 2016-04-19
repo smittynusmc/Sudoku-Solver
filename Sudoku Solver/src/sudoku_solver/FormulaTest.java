@@ -47,7 +47,7 @@ public class FormulaTest {
 	public void testWritetoFile () {
 		File file = new File("C:/Users/Adam Tucker/Google Drive/School/Spring 2016/DAA/sat4j-sat4j-sat-v20130419/s28.cnf");
 		Formula formula = Formula.readFromFile(file.toString());
-		Formula.writeToFile(formula);
+		formula.writeToFile(file);
 		//String[] array = null;
 		//array[0] = file.toString();
 		//ISolver solver = SolverFactory.newDefault();

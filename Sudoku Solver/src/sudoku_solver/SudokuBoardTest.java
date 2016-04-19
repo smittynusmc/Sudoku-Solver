@@ -2,13 +2,18 @@ package sudoku_solver;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.Test;
 
 public class SudokuBoardTest {
 
 	@Test
 	public void testSudokuBoard() {
-		fail("Not yet implemented");
+		SudokuBoard board = new SudokuBoard();
+		board.createBoard();
+		File file = new File (Formula.getFileName());
+		board.writeToFile(file);
 	}
 
 	@Test

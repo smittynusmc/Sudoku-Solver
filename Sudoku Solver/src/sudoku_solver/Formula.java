@@ -2,6 +2,7 @@ package sudoku_solver;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -37,15 +38,12 @@ import org.sat4j.specs.TimeoutException;
 
 public class Formula {
 	
-	//The number of variables for a 3x3 sudoku board
-	public static final int NUMVARIABLES= 729;
-	
 	//The end of line marker for a cnf file which marks the end of a clause
 	//in a boolean formula
 	public static final int CNF_END_OF_LINEMARKER = 0;
 	
 	//The filename/location for a new file
-	private static String fileName = "C:/Users/Adam Tucker/Google Drive/School/Spring 2016/DAA/sat4j-sat4j-sat-v20130419/s28.cnf";
+	private static String fileName = "C:/Users/Adam Tucker/git2/SudokuSolver/Sudoku Solver/src/sudoku_solver/test.cnf";
 	
 	// list of clauses in CNF 
 	private List<Clause> formulaList;
@@ -90,6 +88,12 @@ public class Formula {
 	}
 	
 	public static void main ( String [] args ) {
+		SudokuBoard board = new SudokuBoard();
+		//board.readFromSudokuFile(args[0]);
+		board.readFromSudokuFile("C:/Users/Adam Tucker/git2/SudokuSolver/Sudoku Solver/src/sudoku_solver/2x2.txt");
+		board.createBoard();
+		File cnfFile = new File (fileName);
+		board.writeToFile(cnfFile);
 		ISolver solver = SolverFactory . newDefault ();
 		solver . setTimeout (3600); // 1 hour timeout
 		Reader reader = new DimacsReader ( solver );
@@ -324,6 +328,51 @@ public class Formula {
 		}
 		return child;
 	}
+	
+	public void readFromSudokuFile (String filename) {
+		BufferedReader br = null;
+		String line = null;
+		@SuppressWarnings("unused")
+		int numVars, numClauses, var;
+		try {
+			br = new BufferedReader(new FileReader(filename));
+			while((line = br.readLine()) != null){          
+				if(line.startsWith("c")) {
+					continue;
+				}
+				if(line.length() == 0) {
+					continue;
+				}
+				int i =0;
+				while (line!=null&&!(line.startsWith("c"))){
+					Clause c = new Clause();
+					Scanner sc = new Scanner(line);
+					while(sc.hasNextInt()){
+						var = sc.nextInt();
+						if (i == 0) {
+								setNumVariables(var*sc.nextInt());
+							}
+						else if (var == 0) {
+							continue;
+						}
+						else if (var != 0){
+							c.add(new Literal(var));
+							addClause(c);
+							continue;
+						}
+						i++;
+					}
+					line = br.readLine();
+				}
+			}
+			br.close();
+		} catch (FileNotFoundException ex) {
+			System.out.println("file I/O error: " + ex);
+		} catch (IOException ex) {
+			System.out.println("file I/O error: " + ex);
+		}
+		
+	}
 
 	/**
 	 * This method loads and returns a formula from a file specification
@@ -386,14 +435,14 @@ public class Formula {
 	 * Takes a formula and makes a new cnf file 
 	 * @param formToWrite
 	 */
-	public static void writeToFile (Formula formToWrite) {
+	public void writeToFile (File fileToWrite) {
 		try {    
             Writer fileWriter = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(fileName), "utf-8"));
+                    new FileOutputStream(fileToWrite.toString()), "utf-8"));
             fileWriter.write("c This file illustrates the file format \n");
-            fileWriter.write("p cnf " + NUMVARIABLES + " " + formToWrite.formulaList.size() + " \n");
+            fileWriter.write("p cnf " + numVariables + " " + this.formulaList.size() + " \n");
             String lines = "";
-            for (Clause myClause: formToWrite.formulaList) {
+            for (Clause myClause: this.formulaList) {
             	lines = lines + myClause + CNF_END_OF_LINEMARKER + "\n";
             }
             fileWriter.write(lines);
