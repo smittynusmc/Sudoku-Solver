@@ -333,7 +333,7 @@ public class Formula {
 		BufferedReader br = null;
 		String line = null;
 		@SuppressWarnings("unused")
-		int numVars, numClauses, var;
+		int numVars, numClauses, var, size = 0;
 		try {
 			br = new BufferedReader(new FileReader(filename));
 			while((line = br.readLine()) != null){          
@@ -347,20 +347,20 @@ public class Formula {
 				while (line!=null&&!(line.startsWith("c"))){
 					Clause c = new Clause();
 					Scanner sc = new Scanner(line);
+					int j = 0;
 					while(sc.hasNextInt()){
 						var = sc.nextInt();
 						if (i == 0) {
 								setNumVariables(var*sc.nextInt());
-							}
-						else if (var == 0) {
-							continue;
-						}
-						else if (var != 0){
-							c.add(new Literal(var));
+								i++;
+							 }
+						else {
+						if (var != 0){
+							c.add(new Literal(i+((var-1)*(int) (Math.pow(numVariables, 2)))));
 							addClause(c);
-							continue;
 						}
 						i++;
+						}
 					}
 					line = br.readLine();
 				}
