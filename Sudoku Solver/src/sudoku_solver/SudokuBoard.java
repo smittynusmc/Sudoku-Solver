@@ -19,7 +19,7 @@ public class SudokuBoard extends Formula {
 
 	public SudokuBoard()
 	{
-
+		
 	}
 
 	public void createBoard()
