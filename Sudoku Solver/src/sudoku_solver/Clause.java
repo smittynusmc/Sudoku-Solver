@@ -26,7 +26,7 @@ public class Clause
 	 */
 	public Clause()
 	{  
-		clauseValues = new ArrayList<Literal>(100);
+		clearClause();
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class Clause
 	 */
 	public void clearClause()
 	{
-		clauseValues.clear();
+		clauseValues=  new ArrayList<Literal>(100);
 	}
 
 	/**

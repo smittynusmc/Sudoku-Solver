@@ -82,7 +82,7 @@ public class Formula {
 		formulaList = new ArrayList<Clause>(13000);
 		successState = new ArrayList <Literal> (1000);
 		isEmpty = true; 
-		numVariables = 0;
+		numVariables = 0;//look at this later
 		minClauseSize=Integer.MAX_VALUE;
 		minClauseIndex=-1;
 	}
@@ -329,50 +329,6 @@ public class Formula {
 		return child;
 	}
 	
-	public void readFromSudokuFile (String filename) {
-		BufferedReader br = null;
-		String line = null;
-		@SuppressWarnings("unused")
-		int numVars, numClauses, var, size = 0;
-		try {
-			br = new BufferedReader(new FileReader(filename));
-			while((line = br.readLine()) != null){          
-				if(line.startsWith("c")) {
-					continue;
-				}
-				if(line.length() == 0) {
-					continue;
-				}
-				int i =0;
-				while (line!=null&&!(line.startsWith("c"))){
-					Clause c = new Clause();
-					Scanner sc = new Scanner(line);
-					int j = 0;
-					while(sc.hasNextInt()){
-						var = sc.nextInt();
-						if (i == 0) {
-								setNumVariables(var*sc.nextInt());
-								i++;
-							 }
-						else {
-						if (var != 0){
-							c.add(new Literal(i+((var-1)*(int) (Math.pow(numVariables, 2)))));
-							addClause(c);
-						}
-						i++;
-						}
-					}
-					line = br.readLine();
-				}
-			}
-			br.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("file I/O error: " + ex);
-		} catch (IOException ex) {
-			System.out.println("file I/O error: " + ex);
-		}
-		
-	}
 
 	/**
 	 * This method loads and returns a formula from a file specification
