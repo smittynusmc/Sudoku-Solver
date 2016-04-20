@@ -90,10 +90,12 @@ public class Formula {
 		minClauseIndex=-1;
 	}
 	
-	public static void main ( String [] args ) {
+	public static void main ( String [] args ) throws IOException {
 		SudokuBoard board = new SudokuBoard();
-		//board.readFromSudokuFile(args[0]);
-		board.readFromSudokuFile("C:/Users/Adam Tucker/git2/SudokuSolver/Sudoku Solver/src/sudoku_solver/2x2.txt");
+		File file = new File (args[0]);
+		String path = file.getAbsolutePath();
+		board.readFromSudokuFile(path);
+		//board.readFromSudokuFile("C:\Users\Adam Tucker\git2\SudokuSolver\Sudoku Solver\src\sudoku_solver");
 		board.createBoard();
 		File dir = new File (directory);
 		File cnfFile = new File (dir, fileName);
@@ -103,7 +105,8 @@ public class Formula {
 		Reader reader = new DimacsReader ( solver );
 		// CNF filename is given on the command line
 		try {
-		IProblem problem = reader . parseInstance (fileName);
+		String cnf = cnfFile.getAbsolutePath();
+		IProblem problem = reader . parseInstance (cnf);
 		if ( problem . isSatisfiable ()) {
 		System . out . println (" Satisfiable !");
 		//Gets the array of integers that are the solution to the formula
