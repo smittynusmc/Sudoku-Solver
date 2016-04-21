@@ -37,17 +37,17 @@ import org.sat4j.specs.TimeoutException;
  */
 
 public class Formula {
-	
+
 	//The end of line marker for a cnf file which marks the end of a clause
 	//in a boolean formula
 	public static final int CNF_END_OF_LINEMARKER = 0;
-	
+
 	//The filename/location for a new file
 	private static String fileName = "sudoku.cnf";
-	
+
 	//The directory for a new file
 	private static String directory = "C:/TEMP";
-	
+
 	// list of clauses in CNF 
 	private List<Clause> formulaList;
 
@@ -89,7 +89,7 @@ public class Formula {
 		minClauseSize=Integer.MAX_VALUE;
 		minClauseIndex=-1;
 	}
-	
+
 	public static void main ( String [] args ) throws IOException {
 		SudokuBoard board = new SudokuBoard();
 		File file = new File (args[0]);
@@ -105,60 +105,62 @@ public class Formula {
 		Reader reader = new DimacsReader ( solver );
 		// CNF filename is given on the command line
 		try {
-		String cnf = cnfFile.getAbsolutePath();
-		IProblem problem = reader . parseInstance (cnf);
-		if ( problem . isSatisfiable ()) {
-		System . out . println (" Satisfiable !");
-		//Gets the array of integers that are the solution to the formula
-		int[] solutionArray = problem.primeImplicant();
-		for (int i=0;i<solutionArray.length;i++) {
-			System.out.print(solutionArray[i] + " ");
-		}
-		} else {
-		System . out . println (" Unsatisfiable !");
-		}
+			String cnf = cnfFile.getAbsolutePath();
+			IProblem problem = reader . parseInstance (cnf);
+			if ( problem . isSatisfiable ()) {
+				System . out . println (" Satisfiable !");
+				//Gets the array of integers that are the solution to the formula
+				int[] solutionArray = problem.primeImplicant();
+				for (int i=0;i<solutionArray.length;i++) {
+					if (solutionArray[i]>0) {
+						System.out.print(solutionArray[i] + " ");
+					}
+				}
+			} else {
+				System . out . println (" Unsatisfiable !");
+			}
 		} catch ( FileNotFoundException e) {
-				e.printStackTrace();
+			e.printStackTrace();
 		} catch ( ParseFormatException e) {
 			e.printStackTrace();
 		} catch ( IOException e) {
 			e.printStackTrace();
 		} catch ( ContradictionException e) {
-		System .out . println (" Unsatisfiable ( trivial )!");
+			System .out . println (" Unsatisfiable ( trivial )!");
 		} catch ( TimeoutException e) {
-		System .out . println (" Timeout , sorry !");
+			System .out . println (" Timeout , sorry !");
 		}
-		}
-	
+	}
+
 	public static void SAT4j (String file) {
 		ISolver solver = SolverFactory . newDefault ();
 		solver . setTimeout (3600); // 1 hour timeout
 		Reader reader = new DimacsReader ( solver );
 		// CNF filename is given on the command line
 		try {
-		IProblem problem = reader . parseInstance (file);
-		if ( problem . isSatisfiable ()) {
-		System . out . println (" Satisfiable !");
-		//Gets the array of integers that are the solution to the formula
-		int[] solutionArray = problem.primeImplicant();
-		for (int i=0;i<solutionArray.length;i++) {
-			System.out.print(solutionArray[i] + " ");
-		}
-		} else {
-		System . out . println (" Unsatisfiable !");
-		}
+			IProblem problem = reader . parseInstance (file);
+			if ( problem . isSatisfiable ()) {
+				System . out . println (" Satisfiable !");
+				//Gets the array of integers that are the solution to the formula
+				int[] solutionArray = problem.primeImplicant();
+				for (int i=0;i<solutionArray.length;i++) {
+					System.out.print(solutionArray[i] + " ");
+				}
+			} else {
+				System . out . println (" Unsatisfiable !");
+			}
 		} catch ( FileNotFoundException e) {
-				e.printStackTrace();
+			e.printStackTrace();
 		} catch ( ParseFormatException e) {
 			e.printStackTrace();
 		} catch ( IOException e) {
 			e.printStackTrace();
 		} catch ( ContradictionException e) {
-		System .out . println (" Unsatisfiable ( trivial )!");
+			System .out . println (" Unsatisfiable ( trivial )!");
 		} catch ( TimeoutException e) {
-		System .out . println (" Timeout , sorry !");
+			System .out . println (" Timeout , sorry !");
 		}
-		}
+	}
 
 	public List<Clause> getFormulaList() {
 		return formulaList;
@@ -335,7 +337,7 @@ public class Formula {
 		}
 		return child;
 	}
-	
+
 	public void readFromSudokuFile (String filename) {
 		BufferedReader br = null;
 		String line = null;
@@ -358,15 +360,15 @@ public class Formula {
 					while(sc.hasNextInt()){
 						var = sc.nextInt();
 						if (i == 0) {
-								setNumVariables(var*sc.nextInt());
-								i++;
-							 }
-						else {
-						if (var != 0){
-							c.add(new Literal(i+((var-1)*(int) (Math.pow(numVariables, 2)))));
-							addClause(c);
+							setNumVariables(var*sc.nextInt());
+							i++;
 						}
-						i++;
+						else {
+							if (var != 0){
+								c.add(new Literal(i+((var-1)*(int) (Math.pow(numVariables, 2)))));
+								addClause(c);
+							}
+							i++;
 						}
 					}
 					line = br.readLine();
@@ -378,7 +380,7 @@ public class Formula {
 		} catch (IOException ex) {
 			System.out.println("file I/O error: " + ex);
 		}
-		
+
 	}
 
 	/**
@@ -437,7 +439,7 @@ public class Formula {
 		}
 		return f;
 	}
-	
+
 	/**
 	 * Takes a formula and makes a new cnf file 
 	 * @param formToWrite
@@ -445,21 +447,21 @@ public class Formula {
 	public void writeToFile (File fileToWrite) {
 		try {    
 			fileToWrite.getParentFile().mkdirs();
-            Writer fileWriter = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(fileToWrite.toString()), "utf-8"));
-            fileWriter.write("c This file illustrates the file format \n");
-            fileWriter.write("p cnf " + numVariables + " " + this.formulaList.size() + " \n");
-            String lines = "";
-            for (Clause myClause: this.formulaList) {
-            	lines = lines + myClause + CNF_END_OF_LINEMARKER + "\n";
-            }
-            fileWriter.write(lines);
-            fileWriter.close();
-        } catch (IOException e) {
-            System.err.println("Problem writing to the file statsTest.txt");
-        }
+			Writer fileWriter = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(fileToWrite.toString()), "utf-8"));
+			fileWriter.write("c This file illustrates the file format \n");
+			fileWriter.write("p cnf " + numVariables + " " + this.formulaList.size() + " \n");
+			String lines = "";
+			for (Clause myClause: this.formulaList) {
+				lines = lines + myClause + CNF_END_OF_LINEMARKER + "\n";
+			}
+			fileWriter.write(lines);
+			fileWriter.close();
+		} catch (IOException e) {
+			System.err.println("Problem writing to the file statsTest.txt");
+		}
 	}
-	
+
 	/**
 	 * Gets the filename/location for the a new .cnf file
 	 * @return The filename/location
@@ -467,7 +469,7 @@ public class Formula {
 	public static String getFileName() {
 		return fileName;
 	}
-	
+
 	/**
 	 * Sets the filename/location for a new .cnf file
 	 * @param fileName The new filename/location

@@ -25,7 +25,7 @@ public class SudokuBoard extends Formula {
 
 	public SudokuBoard()
 	{
-		SIZE = 3;
+		SIZE = 2;
 		SIZE_SQUARED = (int) Math.pow(SIZE, 2);
 		SIZE_FOURTH = (int) Math.pow(SIZE, 4);
 		SIZE_SIXTH = (int) Math.pow(SIZE, 6);
@@ -59,7 +59,7 @@ public class SudokuBoard extends Formula {
 				finalizeClause(fetchedList);
 			}
 
-			if(((i/(SIZE_SQUARED))+1)%(SIZE_SQUARED)==1)//if (row%size^2==1)
+			if((((i-1)/(SIZE_SQUARED)))%(SIZE_SQUARED)==0)//if (row%size^2==1)
 			{
 				List<Literal> fetchedList;
 				fetchedList = gatherColumnLiterals(i);
@@ -78,7 +78,7 @@ public class SudokuBoard extends Formula {
 		}
 	}
 
-	private List<Literal> gatherCellLiterals(int startingCellNum)
+	protected List<Literal> gatherCellLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
 
@@ -90,7 +90,7 @@ public class SudokuBoard extends Formula {
 		return workingList;	
 	}
 
-	private List<Literal> gatherColumnLiterals(int startingCellNum)
+	protected List<Literal> gatherColumnLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
 
@@ -102,7 +102,7 @@ public class SudokuBoard extends Formula {
 		return workingList;	
 	}
 
-	private List<Literal> gatherRowLiterals(int startingCellNum)
+	protected List<Literal> gatherRowLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
 
@@ -114,7 +114,7 @@ public class SudokuBoard extends Formula {
 		return workingList;	
 	}
 
-	private List<Literal> gatherBlockLiterals(int startingCellNum)
+	protected List<Literal> gatherBlockLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
 
