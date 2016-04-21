@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import org.sat4j.minisat.SolverFactory;
 import org.sat4j.reader.DimacsReader;
@@ -46,7 +47,7 @@ public class Formula {
 	private static String fileName = "sudoku.cnf";
 
 	//The directory for a new file
-	private static String directory = "C:/TEMP";
+	private static String directory = "C:/Dennis_Umair_Adam_Sudoku_CNF";
 
 	// list of clauses in CNF 
 	private List<Clause> formulaList;
@@ -91,14 +92,15 @@ public class Formula {
 	}
 
 	public static void main ( String [] args ) throws IOException {
-		SudokuBoard board = new SudokuBoard();
+		long start = System.currentTimeMillis();
 		File file = new File (args[0]);
 		String path = file.getAbsolutePath();
-		board.readFromSudokuFile(path);
+		SudokuBoard board = SudokuBoard.readFromSudokuFile(path);
 		//board.readFromSudokuFile("C:\Users\Adam Tucker\git2\SudokuSolver\Sudoku Solver\src\sudoku_solver");
 		board.createBoard();
+		Random random = new Random();
 		File dir = new File (directory);
-		File cnfFile = new File (dir, fileName);
+		File cnfFile = new File (dir, board.SIZE + "x" + board.SIZE + "_" + start + "_" + fileName);
 		board.writeToFile(cnfFile);
 		ISolver solver = SolverFactory . newDefault ();
 		solver . setTimeout (3600); // 1 hour timeout
@@ -108,10 +110,13 @@ public class Formula {
 			String cnf = cnfFile.getAbsolutePath();
 			IProblem problem = reader . parseInstance (cnf);
 			if ( problem . isSatisfiable ()) {
-				System . out . println (" Satisfiable !");
+				System . out . println ("Satisfiable !");
 				//Gets the array of integers that are the solution to the formula
 				int[] solutionArray = problem.primeImplicant();
 				for (int i=0;i<solutionArray.length;i++) {
+					if (i%16==0) {
+						System.out.println();
+					}
 					if (solutionArray[i]>0) {
 						System.out.print(solutionArray[i] + " ");
 					}
@@ -130,6 +135,8 @@ public class Formula {
 		} catch ( TimeoutException e) {
 			System .out . println (" Timeout , sorry !");
 		}
+		long end = System.currentTimeMillis();
+		System.err.println("\nThe runtime is " + (end-start)/1000.0 + " seconds");
 	}
 
 	public static void SAT4j (String file) {
@@ -336,51 +343,6 @@ public class Formula {
 
 		}
 		return child;
-	}
-
-	public void readFromSudokuFile (String filename) {
-		BufferedReader br = null;
-		String line = null;
-		@SuppressWarnings("unused")
-		int numVars, numClauses, var, size = 0;
-		try {
-			br = new BufferedReader(new FileReader(filename));
-			while((line = br.readLine()) != null){          
-				if(line.startsWith("c")) {
-					continue;
-				}
-				if(line.length() == 0) {
-					continue;
-				}
-				int i =0;
-				while (line!=null&&!(line.startsWith("c"))){
-					Clause c = new Clause();
-					Scanner sc = new Scanner(line);
-					int j = 0;
-					while(sc.hasNextInt()){
-						var = sc.nextInt();
-						if (i == 0) {
-							setNumVariables(var*sc.nextInt());
-							i++;
-						}
-						else {
-							if (var != 0){
-								c.add(new Literal(i+((var-1)*(int) (Math.pow(numVariables, 2)))));
-								addClause(c);
-							}
-							i++;
-						}
-					}
-					line = br.readLine();
-				}
-			}
-			br.close();
-		} catch (FileNotFoundException ex) {
-			System.out.println("file I/O error: " + ex);
-		} catch (IOException ex) {
-			System.out.println("file I/O error: " + ex);
-		}
-
 	}
 
 	/**

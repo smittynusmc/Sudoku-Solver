@@ -147,13 +147,14 @@ public class SudokuBoard extends Formula {
 			}
 		}
 	}
-	
-	
-	public void readFromSudokuFile (String filename) {
+
+
+	public static SudokuBoard readFromSudokuFile (String filename) {
 		BufferedReader br = null;
 		String line = null;
 		@SuppressWarnings("unused")
-		int numVars, numClauses, var, size = 0;
+		SudokuBoard board = null;
+		int numVars, numClauses, var = 0; int i =0;
 		try {
 			br = new BufferedReader(new FileReader(filename));
 			while((line = br.readLine()) != null){          
@@ -163,26 +164,27 @@ public class SudokuBoard extends Formula {
 				if(line.length() == 0) {
 					continue;
 				}
-				int i =0;
-				while (line!=null&&!(line.startsWith("c"))){
-					Clause c = new Clause();
-					Scanner sc = new Scanner(line);
-					int j = 0;
-					while(sc.hasNextInt()){
-						var = sc.nextInt();
+				else {
+					if (line!=null){
+						Clause c = new Clause();
+						Scanner sc = new Scanner(line);
 						if (i == 0) {
-								setNumVariables(var*sc.nextInt());
-								i++;
-							 }
-						else {
-						if (var != 0){
-							c.add(new Literal(i+((var-1)*(int) (Math.pow(numVariables, 2)))));
-							addClause(c);
+							var = sc.nextInt();
+							board = new SudokuBoard (var);
+							board.setNumVariables(var*sc.nextInt());
+							i++;
 						}
-						i++;
+						else {
+							while(sc.hasNextInt()){
+								var = sc.nextInt();
+								if (var != 0){
+									c.add(new Literal(i+((var-1)*(int) (Math.pow(board.numVariables, 2)))));
+									board.addClause(c);
+								}
+								i++;
+							}
 						}
 					}
-					line = br.readLine();
 				}
 			}
 			br.close();
@@ -191,6 +193,6 @@ public class SudokuBoard extends Formula {
 		} catch (IOException ex) {
 			System.out.println("file I/O error: " + ex);
 		}
-		
+		return board;
 	}
 }
