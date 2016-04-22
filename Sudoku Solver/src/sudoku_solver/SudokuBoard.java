@@ -166,19 +166,19 @@ public class SudokuBoard extends Formula {
 				}
 				else {
 					if (line!=null){
-						Clause c = new Clause();
 						Scanner sc = new Scanner(line);
 						if (i == 0) {
 							var = sc.nextInt();
 							board = new SudokuBoard (var);
-							board.setNumVariables(var*sc.nextInt());
+							board.setNumVariables(board.SIZE_SIXTH);
 							i++;
 						}
 						else {
 							while(sc.hasNextInt()){
 								var = sc.nextInt();
 								if (var != 0){
-									c.add(new Literal(i+((var-1)*(int) (Math.pow(board.numVariables, 2)))));
+									Clause c = new Clause();
+									c.add(new Literal(((var-1)*board.SIZE_FOURTH)+i));
 									board.addClause(c);
 								}
 								i++;

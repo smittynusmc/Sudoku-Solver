@@ -114,7 +114,7 @@ public class Formula {
 				//Gets the array of integers that are the solution to the formula
 				int[] solutionArray = problem.primeImplicant();
 				for (int i=0;i<solutionArray.length;i++) {
-					if (i%16==0) {
+					if (i%((board.SIZE_SQUARED)*(board.SIZE_SQUARED))==0) {
 						System.out.println();
 					}
 					if (solutionArray[i]>0) {
