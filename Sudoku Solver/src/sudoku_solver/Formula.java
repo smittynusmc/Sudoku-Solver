@@ -415,9 +415,9 @@ public class Formula {
 			fileWriter.write("p cnf " + numVariables + " " + this.formulaList.size() + " \n");
 			String lines = "";
 			for (Clause myClause: this.formulaList) {
-				lines = lines + myClause + CNF_END_OF_LINEMARKER + "\n";
+				lines = myClause.toString() + CNF_END_OF_LINEMARKER + "\n";
+                                fileWriter.write(lines);
 			}
-			fileWriter.write(lines);
 			fileWriter.close();
 		} catch (IOException e) {
 			System.err.println("Problem writing to the file statsTest.txt");
