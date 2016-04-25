@@ -417,6 +417,7 @@ public class Formula {
 			for (Clause myClause: this.formulaList) {
 				lines = myClause.toString() + CNF_END_OF_LINEMARKER + "\n";
                                 fileWriter.write(lines);
+                                
 			}
 			fileWriter.close();
 		} catch (IOException e) {
