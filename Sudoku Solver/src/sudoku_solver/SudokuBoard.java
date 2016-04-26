@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -22,13 +23,22 @@ public class SudokuBoard extends Formula {
 
 	public final int SIZE_FOURTH;
 	public final int SIZE_SIXTH;
-
+        
+        private boolean[][][] printBoard;
+	private int numberOfItemInBlock;
+        
 	public SudokuBoard()
 	{
 		SIZE = 2;
 		SIZE_SQUARED = (int) Math.pow(SIZE, 2);
 		SIZE_FOURTH = (int) Math.pow(SIZE, 4);
 		SIZE_SIXTH = (int) Math.pow(SIZE, 6);
+		
+		numberOfItemInBlock = SIZE_SQUARED;
+
+		printBoard = new boolean[numberOfItemInBlock][numberOfItemInBlock][numberOfItemInBlock];
+
+		setZeroToCellofBoard();
 	}
 
 	public SudokuBoard(int SizeGiven)
@@ -37,9 +47,116 @@ public class SudokuBoard extends Formula {
 		SIZE_SQUARED = (int) Math.pow(SIZE, 2);
 		SIZE_FOURTH = (int) Math.pow(SIZE, 4);
 		SIZE_SIXTH = (int) Math.pow(SIZE, 6);
+                
+                numberOfItemInBlock = SIZE_SQUARED;
+
+		printBoard = new boolean[numberOfItemInBlock][numberOfItemInBlock][numberOfItemInBlock];
+
+		setZeroToCellofBoard();
 
 	}
+        
+        public void setZeroToCellofBoard() 
+        {
 
+            for (int i = 0; i < this.numberOfItemInBlock; i++) 
+            {
+                for (int j = 0; j < this.numberOfItemInBlock; j++) 
+                {
+                    for (int k = 0; k < this.numberOfItemInBlock; k++) {
+                        this.printBoard[i][j][k] = false;
+                    }
+                }
+            }
+        }
+        
+        public void convertSatModelToSudokuBoard(int[] model) 
+	{
+        for (int i = 0; i < model.length; i++) 
+        {
+            int index = model[i];
+            int[] pos = this.getPositionForIndex(index > 0 ? index : -index);
+            this.printBoard[pos[0]][pos[1]][pos[2]] = (index > 0) ? true : false;
+        }//end for loop
+    }//end convertSatModelToSudokuBoard
+	
+	public int[] getPositionForIndex(int index) 
+	{
+        index = index - 1;
+        int[] pos = new int[3];
+        
+        int maxInCol = this.numberOfItemInBlock;
+        int maxInRow = this.numberOfItemInBlock*maxInCol;
+        
+        pos[0] = index/maxInRow;
+        index = index%maxInRow;
+        pos[1] = index/maxInCol;
+        pos[2] = index%maxInCol;
+        
+        return pos;
+    }//end getPositionForIndex
+	
+	public boolean saveSudokuResultToFile(int[][][] solArray, String fileName) 
+	{
+        //Destination will be the current directory of the project i.e. C:\Users\Owner\Documents\NetBeansProjects\Sudoku-Solver
+        String outputSudokuFile = "output_of " + fileName + "_.txt";
+
+        try{
+            PrintWriter writer = new PrintWriter(outputSudokuFile);
+            
+            for (int i = 0; i < this.numberOfItemInBlock; i++) {
+                for (int j = 0; j < this.numberOfItemInBlock; j++) {
+                    for (int k = 0; k < this.numberOfItemInBlock; k++) {
+                        if (solArray[i][j][k] > 0) {
+                            writer.format("%4s", solArray[i][j][k] + "");
+                        }
+                    }
+                    
+                    if (j % this.SIZE == this.SIZE - 1) {
+                        writer.print("  ");
+                    }
+                }
+                if(i % this.SIZE == this.SIZE - 1) {
+                    writer.println();
+                }
+                writer.println();
+            }
+        
+            writer.close();
+            return true;
+        } catch(IOException ex) {
+            System.out.println(ex.getMessage());
+        } 
+        
+        return false;
+    }
+	
+	public int[][][] printSudokuBoard() {
+        int[][][] solArray = new int[this.numberOfItemInBlock][this.numberOfItemInBlock][this.numberOfItemInBlock];
+        for (int i = 0; i < this.numberOfItemInBlock; i++) {
+            for (int j = 0; j < this.numberOfItemInBlock; j++) {
+                for (int k = 0; k < this.numberOfItemInBlock; k++) {
+                    if (this.printBoard[k][j][i] == true) {
+                        solArray[j][i][k] = k+1;
+
+                    }
+                }
+            }
+        }
+                for (int a = 0; a < solArray.length; a++) {
+                    for (int b = 0; b < solArray.length; b++) {
+                        for (int c = 0; c < solArray.length; c++) {
+                            if (solArray[a][b][c] > 0) {
+                                System.out.format("%4s", solArray[a][b][c] + "");
+                            }
+                }
+            }
+            System.out.println();
+        }
+        return solArray;        
+    }
+   
+        
 	public void createBoard()
 	{
 
@@ -148,34 +265,6 @@ public class SudokuBoard extends Formula {
 		}
 	}
         
-        public int[] setSudokuSolution (List <Integer> solList) {
-            int[] solArray = new int[SIZE_FOURTH];
-                                for (int i = 0; i < SIZE_SQUARED;i++) {
-                                    for (int k = 0; k < SIZE_SQUARED;k++) {
-                                        int j = solList.get((k*(SIZE_SQUARED)+i));
-                                        int m = (j%SIZE_SQUARED);
-                                        if (m==0) {
-                                            m = SIZE_SQUARED;
-                                        }
-                                        solArray[(m+SIZE_SQUARED*i)-1] = getSudokuNum(j);
-                                    }
-                                }
-                                return solArray;
-        }
-        
-        public int getSudokuNum (int num) {
-            int count = 1;
-            while (num > num % SIZE_FOURTH) {
-                num = num - SIZE_FOURTH;
-                count ++;
-            }
-            if (num%SIZE_FOURTH==0) {
-                return count-1;
-            }
-            return count;
-        }
-
-
 	public static SudokuBoard readFromSudokuFile (String filename) {
 		BufferedReader br = null;
 		String line = null;

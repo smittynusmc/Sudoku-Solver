@@ -14,7 +14,7 @@ public class SudokuBoardTest {
 		SudokuBoard board = new SudokuBoard();
 		board.createBoard();
 		File file = new File (Formula.getFileName());
-		board.writeToFile(file);
+		board.writeToFile(file,"NAME OF FILE");
 	}
 
 	@Test

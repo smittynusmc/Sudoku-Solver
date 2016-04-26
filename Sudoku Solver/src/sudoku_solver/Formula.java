@@ -44,7 +44,7 @@ public class Formula {
 	public static final int CNF_END_OF_LINEMARKER = 0;
 
 	//The filename/location for a new file
-	private static String fileName = "sudoku.cnf";
+	private static String fileName = ".cnf";
 
 	//The directory for a new file
 	private static String directory = "C:/Dennis_Umair_Adam_Sudoku_CNF";
@@ -100,8 +100,9 @@ public class Formula {
 		board.createBoard();
 		Random random = new Random();
 		File dir = new File (directory);
-		File cnfFile = new File (dir, board.SIZE + "x" + board.SIZE + "_" + start + "_" + fileName);
-		board.writeToFile(cnfFile);
+                String destFileName = args[0].toString() + "_" + start + fileName;
+		File cnfFile = new File (dir, destFileName);
+		board.writeToFile(cnfFile,destFileName);
 		ISolver solver = SolverFactory . newDefault ();
 		solver . setTimeout (3600); // 1 hour timeout
 		Reader reader = new DimacsReader ( solver );
@@ -124,20 +125,19 @@ public class Formula {
 						System.out.print(solutionArray[i] + " ");
 					}
 				}
-                                int[] solArray = board.setSudokuSolution(posArray);
-                                //prints out the solution
-                                for (int i = 0;i<solArray.length;i++) {
-                                    if (i%board.SIZE_SQUARED==0) {
-                                        System.out.println();
-					}
-                                    System.out.print(solArray[i] + "|");
-                                }
+                                System.out.println();
+
+				board.convertSatModelToSudokuBoard(problem.model());
+
+                                System.out.println("Completed board:");
+                                int[][][] solArray = board.printSudokuBoard();
+                                board.saveSudokuResultToFile(solArray,destFileName);
+
+                                System.out.println();
                                 
 			} else {
 				System . out . println (" Unsatisfiable !");
 			}
-                        long end = System.currentTimeMillis();
-                        System.err.println("\nThe runtime is " + (end-start)/1000.0 + " seconds");
 		} catch ( FileNotFoundException e) {
 			e.printStackTrace();
 		} catch ( ParseFormatException e) {
@@ -149,6 +149,8 @@ public class Formula {
 		} catch ( TimeoutException e) {
 			System .out . println (" Timeout , sorry !");
 		}
+                long end = System.currentTimeMillis();
+                System.err.println("\nThe runtime is " + (end-start)/1000.0 + " seconds");
 	}
 
 	public List<Clause> getFormulaList() {
@@ -388,12 +390,12 @@ public class Formula {
 	 * Takes a formula and makes a new cnf file 
 	 * @param fileToWrite The file to be made into a cnf file
 	 */
-	public void writeToFile (File fileToWrite) {
+	public void writeToFile (File fileToWrite, String nameOfSudoku) {
 		try {    
 			fileToWrite.getParentFile().mkdirs();
 			Writer fileWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(fileToWrite.toString()), "utf-8"));
-			fileWriter.write("c This file illustrates the file format \n");
+			fileWriter.write("c This file illustrates a Sudoku board named " + nameOfSudoku + "\n");
 			fileWriter.write("p cnf " + numVariables + " " + this.formulaList.size() + " \n");
 			for (Clause myClause: this.formulaList) {
 				String lines = myClause.toString() + CNF_END_OF_LINEMARKER + "\n";
