@@ -113,49 +113,31 @@ public class Formula {
 				System . out . println ("Satisfiable !");
 				//Gets the array of integers that are the solution to the formula
 				int[] solutionArray = problem.primeImplicant();
+                                List <Integer> posArray = new ArrayList <Integer> ();
 				for (int i=0;i<solutionArray.length;i++) {
 					if (i%((board.SIZE_SQUARED)*(board.SIZE_SQUARED))==0) {
 						System.out.println();
 					}
 					if (solutionArray[i]>0) {
+                                                // Adds true values to a list
+                                                posArray.add(solutionArray[i]);
 						System.out.print(solutionArray[i] + " ");
 					}
 				}
+                                int[] solArray = board.setSudokuSolution(posArray);
+                                //prints out the solution
+                                for (int i = 0;i<solArray.length;i++) {
+                                    if (i%board.SIZE_SQUARED==0) {
+                                        System.out.println();
+					}
+                                    System.out.print(solArray[i] + "|");
+                                }
+                                
 			} else {
 				System . out . println (" Unsatisfiable !");
 			}
-		} catch ( FileNotFoundException e) {
-			e.printStackTrace();
-		} catch ( ParseFormatException e) {
-			e.printStackTrace();
-		} catch ( IOException e) {
-			e.printStackTrace();
-		} catch ( ContradictionException e) {
-			System .out . println (" Unsatisfiable ( trivial )!");
-		} catch ( TimeoutException e) {
-			System .out . println (" Timeout , sorry !");
-		}
-		long end = System.currentTimeMillis();
-		System.err.println("\nThe runtime is " + (end-start)/1000.0 + " seconds");
-	}
-
-	public static void SAT4j (String file) {
-		ISolver solver = SolverFactory . newDefault ();
-		solver . setTimeout (3600); // 1 hour timeout
-		Reader reader = new DimacsReader ( solver );
-		// CNF filename is given on the command line
-		try {
-			IProblem problem = reader . parseInstance (file);
-			if ( problem . isSatisfiable ()) {
-				System . out . println (" Satisfiable !");
-				//Gets the array of integers that are the solution to the formula
-				int[] solutionArray = problem.primeImplicant();
-				for (int i=0;i<solutionArray.length;i++) {
-					System.out.print(solutionArray[i] + " ");
-				}
-			} else {
-				System . out . println (" Unsatisfiable !");
-			}
+                        long end = System.currentTimeMillis();
+                        System.err.println("\nThe runtime is " + (end-start)/1000.0 + " seconds");
 		} catch ( FileNotFoundException e) {
 			e.printStackTrace();
 		} catch ( ParseFormatException e) {
@@ -404,7 +386,7 @@ public class Formula {
 
 	/**
 	 * Takes a formula and makes a new cnf file 
-	 * @param formToWrite
+	 * @param fileToWrite The file to be made into a cnf file
 	 */
 	public void writeToFile (File fileToWrite) {
 		try {    
@@ -413,11 +395,9 @@ public class Formula {
 					new FileOutputStream(fileToWrite.toString()), "utf-8"));
 			fileWriter.write("c This file illustrates the file format \n");
 			fileWriter.write("p cnf " + numVariables + " " + this.formulaList.size() + " \n");
-			String lines = "";
 			for (Clause myClause: this.formulaList) {
-				lines = myClause.toString() + CNF_END_OF_LINEMARKER + "\n";
+				String lines = myClause.toString() + CNF_END_OF_LINEMARKER + "\n";
                                 fileWriter.write(lines);
-                                
 			}
 			fileWriter.close();
 		} catch (IOException e) {

@@ -147,6 +147,33 @@ public class SudokuBoard extends Formula {
 			}
 		}
 	}
+        
+        public int[] setSudokuSolution (List <Integer> solList) {
+            int[] solArray = new int[SIZE_FOURTH];
+                                for (int i = 0; i < SIZE_SQUARED;i++) {
+                                    for (int k = 0; k < SIZE_SQUARED;k++) {
+                                        int j = solList.get((k*(SIZE_SQUARED)+i));
+                                        int m = (j%SIZE_SQUARED);
+                                        if (m==0) {
+                                            m = SIZE_SQUARED;
+                                        }
+                                        solArray[(m+SIZE_SQUARED*i)-1] = getSudokuNum(j);
+                                    }
+                                }
+                                return solArray;
+        }
+        
+        public int getSudokuNum (int num) {
+            int count = 1;
+            while (num > num % SIZE_FOURTH) {
+                num = num - SIZE_FOURTH;
+                count ++;
+            }
+            if (num%SIZE_FOURTH==0) {
+                return count-1;
+            }
+            return count;
+        }
 
 
 	public static SudokuBoard readFromSudokuFile (String filename) {
