@@ -26,7 +26,11 @@ import org.junit.Test;
 
 public class FormulaTest {
 	
-    
+        /**
+         * Tests the write to file (done in netbeans)
+         * Eclipse doesn't need a main method to run tests
+         * @param args 
+         */
         public static void main (String[]args) {
             FormulaTest form = new FormulaTest ();
             form.testWritetoFile();
@@ -38,7 +42,6 @@ public class FormulaTest {
 	 * Takes a cnf .txt file and makes a formula and then takes that
 	 * formula and makes a .cnf file. The result the same s28.cnf file minus some of the original comments
 	 */
-
 	@Test
 	public void testWritetoFile () {
 		File file = new File("C:/Users/Owner/Dropbox/group/Brute Force SAT solver project/Brute Force SAT solver project/s20 - copy.cnf");

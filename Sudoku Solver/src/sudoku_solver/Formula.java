@@ -83,31 +83,52 @@ public class Formula {
 		minClauseSize=Integer.MAX_VALUE;
 		minClauseIndex=-1;
 	}
-
+        
+        /**
+         * Main method for the Sudoku solver
+         * @param args The sudoku file
+         * @throws IOException 
+         */
 	public static void main ( String [] args ) throws IOException {
-		long start = System.currentTimeMillis();
+		//Start a timer
+                long start = System.currentTimeMillis();
+                //Makes a new file to be scanned for the presets
 		File file = new File (args[0]);
+                //Gets the file location of the file
 		String path = file.getAbsolutePath();
+                //Creates the board with presets
 		SudokuBoard board = SudokuBoard.readFromSudokuFile(path);
-		//board.readFromSudokuFile("C:\Users\Adam Tucker\git2\SudokuSolver\Sudoku Solver\src\sudoku_solver");
+                //Initalizes the board
 		board.createBoard();
+                // Used to ensure cnf files and output files have unique filename
+                // for further examination
 		Random random = new Random();
+                // The directory for cnf file
 		File dir = new File (directory);
+                // The name of the cnf file
                 String destFileName = args[0].toString() + "_" + start + fileName;
+                // Creates the cnf file
 		File cnfFile = new File (dir, destFileName);
+                //The board is written to the cnf file
 		board.writeToFile(cnfFile,destFileName);
+                // Beggining of code taken from http://www.sat4j.org/howto.php
+                // This creates a sequence of objects to solve a SAT instance from a cnf file
 		ISolver solver = SolverFactory . newDefault ();
 		solver . setTimeout (3600); // 1 hour timeout
 		Reader reader = new DimacsReader ( solver );
 		// CNF filename is given on the command line
 		try {
-			String cnf = cnfFile.getAbsolutePath();
+			//Gets the path of the cnf file
+                        String cnf = cnfFile.getAbsolutePath();
 			IProblem problem = reader . parseInstance (cnf);
 			if ( problem . isSatisfiable ()) {
 				System . out . println ("Satisfiable !");
 				//Gets the array of integers that are the solution to the formula
 				int[] solutionArray = problem.primeImplicant();
                                 List <Integer> posArray = new ArrayList <Integer> ();
+                                // Prints out the positve value from the prime implicant
+                                // which is the SAT solution
+                                // The below code prints only the true (positive) numbers
 				for (int i=0;i<solutionArray.length;i++) {
 					if (i%((board.SIZE_SQUARED)*(board.SIZE_SQUARED))==0) {
 						System.out.println();
@@ -119,9 +140,10 @@ public class Formula {
 					}
 				}
                                 System.out.println();
-
+                                //Converts the sat model to a Sudoku board
 				board.convertSatModelToSudokuBoard(problem.model());
-
+                                // Prints the sudoku board solution and saves the solution to file
+                                // in the directory of the unsolved sudoku solution for comparison
                                 System.out.println("Completed board:");
                                 int[][][] solArray = board.printSudokuBoard();
                                 board.saveSudokuResultToFile(solArray,destFileName);
@@ -143,13 +165,22 @@ public class Formula {
 			System .out . println (" Timeout , sorry !");
 		}
                 long end = System.currentTimeMillis();
+                // Prints out the runtime of the program
                 System.err.println("\nThe runtime is " + (end-start)/1000.0 + " seconds");
 	}
-
+        
+        /**
+         * Gets the formula list
+         * @return The formula
+         */
 	public List<Clause> getFormulaList() {
 		return formulaList;
 	}
-
+        
+        /**
+         * Sets the formula list
+         * @param formulaList The formula list to set
+         */
 	public void setFormulaList(List<Clause> formulaList) {
 		this.formulaList = formulaList;
 	}

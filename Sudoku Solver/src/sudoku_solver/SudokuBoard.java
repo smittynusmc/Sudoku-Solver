@@ -9,14 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+/**
+ * The SudokuBoard uses the structure of the SAT solver formula class to 
+ * store and create all the necessary clauses to represent an empty Sudoku board.
+ * @author Adam Tucler
+ * @author Dennis Kluader
+ * @author Umair Chaudhry
+ * @version 4/28/2016
+ */
 public class SudokuBoard extends Formula {
-	/**
-	 * The SudokuBoard uses the structure of the SAT solver formula class to 
-	 * store and create all the necessary clauses to represent an empty Sudoku board.
-	 * 
-	 *  Additional clauses will be added as the Sudoku puzzle information is scanned in 
-	 *  from file
-	 */
 
 	public final int SIZE;
 	public final int SIZE_SQUARED;
@@ -27,6 +28,9 @@ public class SudokuBoard extends Formula {
         private boolean[][][] printBoard;
 	private int numberOfItemInBlock;
         
+        /**
+         * Default constructor with a size for a 2x2 sudoku board
+         */
 	public SudokuBoard()
 	{
 		SIZE = 2;
@@ -40,7 +44,12 @@ public class SudokuBoard extends Formula {
 
 		setZeroToCellofBoard();
 	}
-
+        
+        /**
+         * Paramterized Constructor allowing the size of a nxn board to be set 
+         * on creation of an instance of Sudoku board
+         * @param SizeGiven 
+         */
 	public SudokuBoard(int SizeGiven)
 	{
 		SIZE = SizeGiven;
@@ -56,6 +65,9 @@ public class SudokuBoard extends Formula {
 
 	}
         
+        /**
+         * Inits the printBoard array values to false
+         */
         public void setZeroToCellofBoard() 
         {
 
@@ -70,6 +82,13 @@ public class SudokuBoard extends Formula {
             }
         }
         
+        /**
+         * Converts the solution produced by the SAT solver into a solution of the input Sudoku instance. 
+         * The following statement in the main method 
+         * implemented in the Formula class 
+         * passed solution produced by the SAT Solver SAT4J (which is in the form of an Array of integers) 
+         * @param model An initialized empty array
+         */
         public void convertSatModelToSudokuBoard(int[] model) 
 	{
         for (int i = 0; i < model.length; i++) 
@@ -80,6 +99,11 @@ public class SudokuBoard extends Formula {
         }//end for loop
     }//end convertSatModelToSudokuBoard
 	
+        /**
+         * Find values for each cell in the Sudoku Board. Values can be 1...Size squared.
+         * @param index The index from the model
+         * @return The value for the cell on the board
+         */
 	public int[] getPositionForIndex(int index) 
 	{
         index = index - 1;
@@ -96,6 +120,12 @@ public class SudokuBoard extends Formula {
         return pos;
     }//end getPositionForIndex
 	
+        /**
+         * Saves the sudoku solution to a file
+         * @param solArray The array of soltuions
+         * @param fileName The name of the file for the solutions
+         * @return True if successful
+         */
 	public boolean saveSudokuResultToFile(int[][][] solArray, String fileName) 
 	{
         //Destination will be the current directory of the project i.e. C:\Users\Owner\Documents\NetBeansProjects\Sudoku-Solver
@@ -130,7 +160,10 @@ public class SudokuBoard extends Formula {
         
         return false;
     }
-	
+	/**
+         * Prints the sudoku solution to the console
+         * @return A solution array for the cells on a board
+         */
 	public int[][][] printSudokuBoard() {
         int[][][] solArray = new int[this.numberOfItemInBlock][this.numberOfItemInBlock][this.numberOfItemInBlock];
         for (int i = 0; i < this.numberOfItemInBlock; i++) {
@@ -156,7 +189,9 @@ public class SudokuBoard extends Formula {
         return solArray;        
     }
    
-        
+        /**
+         * Creates the cells, columns, rows and blocks of Sudoku board
+         */
 	public void createBoard()
 	{
 
@@ -194,7 +229,12 @@ public class SudokuBoard extends Formula {
 
 		}
 	}
-
+        
+        /**
+         * Gathers all liters for a cell
+         * @param startingCellNum The starting cell number
+         * @return The list of literals (i.e The clauses for the cells)
+         */
 	protected List<Literal> gatherCellLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
@@ -206,7 +246,12 @@ public class SudokuBoard extends Formula {
 		}
 		return workingList;	
 	}
-
+        
+        /**
+         * Gathers all liters for a column
+         * @param startingCellNum The starting column number
+         * @return The list of literals (i.e The clauses for the columns)
+         */
 	protected List<Literal> gatherColumnLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
@@ -218,7 +263,12 @@ public class SudokuBoard extends Formula {
 		}
 		return workingList;	
 	}
-
+        
+        /**
+         * Gathers all liters for a row
+         * @param startingCellNum The starting row number
+         * @return The list of literals (i.e The clauses for the rows)
+         */
 	protected List<Literal> gatherRowLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
@@ -230,7 +280,12 @@ public class SudokuBoard extends Formula {
 		}
 		return workingList;	
 	}
-
+        
+        /**
+         * Gathers all liters for a block
+         * @param startingCellNum The starting block number
+         * @return The list of literals (i.e The clauses block the rows)
+         */
 	protected List<Literal> gatherBlockLiterals(int startingCellNum)
 	{
 		ArrayList <Literal> workingList = new ArrayList <Literal>();
@@ -243,7 +298,13 @@ public class SudokuBoard extends Formula {
 		}
 		return workingList;	
 	}
-
+        
+        /**
+         * Adds a clause to the formula
+         * For each clause of cells, columns, rows and blocks this method
+         * adds them to a formula to solve a SAT instance
+         * @param input The list of literals to add
+         */
 	public void finalizeClause(List<Literal> input)
 	{
 		Clause workingClause = new Clause();
@@ -264,7 +325,12 @@ public class SudokuBoard extends Formula {
 			}
 		}
 	}
-        
+           
+        /**
+         * Reads a sudoku file and makes the preset values
+         * @param filename The file name of the sudoku file
+         * @return A Sudoku board with its preset values
+         */
 	public static SudokuBoard readFromSudokuFile (String filename) {
 		BufferedReader br = null;
 		String line = null;

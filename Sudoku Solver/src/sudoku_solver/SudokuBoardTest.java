@@ -8,9 +8,18 @@ import java.util.List;
 
 import org.junit.Test;
 
+/**
+ * Test class for a Sudoku board
+ * @author Adam Tucler
+ * @author Dennis Kluader
+ * @author Umair Chaudhry
+ * @version 4/28/2016
+ */
 public class SudokuBoardTest {
 
-	
+	/**
+         * Tests the creation of a Sudoku board
+         */
 	@Test
 	public void testCreateBoard() {
 		SudokuBoard board = new SudokuBoard(3);
@@ -20,7 +29,10 @@ public class SudokuBoardTest {
 		//	System.out.println(board.getFormulaList().get(i));
 		//}
 	}
-
+        
+        /**
+         * Tests the creation of the cells of a Sudoku board
+         */
 	@Test
 	public void gatherCellLiterals() 
 	{
@@ -37,7 +49,10 @@ public class SudokuBoardTest {
 		assertTrue(trialList.contains(new Literal(572)));
 		assertTrue(trialList.contains(new Literal(653)));
 	}
-
+        
+        /**
+         * Tests the creation of rows of a Sudoku board
+         */
 	@Test
 	public void gatherRowLiterals() 
 	{
@@ -56,6 +71,9 @@ public class SudokuBoardTest {
 
 	}
 	
+        /**
+         * Tests the creation of columns of a Sudoku board
+         */
 	@Test
 	public void gatherColumnLiterals() 
 	{
@@ -74,6 +92,9 @@ public class SudokuBoardTest {
 
 	}
 	
+        /**
+         * Tests the creation of blocks of a Sudoku board
+         */
 	@Test
 	public void gatherBlockLiterals() 
 	{
